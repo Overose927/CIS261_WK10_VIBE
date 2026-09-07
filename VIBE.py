@@ -2,7 +2,11 @@
 #CIS261
 #WK10 VIBE Coding
 
-"""Student Grade Calculator."""
+"""Student Grade Calculator.
+
+Program purpose: manage student records, test scores, and calculated grades.
+Data structure choice: Option B, using a Student class.
+"""
 
 
 FILE_NAME = "student_grades.txt"
