@@ -183,10 +183,50 @@ def search_student(students):
         print(student)
 
 
+def display_menu_instruction(choice):
+    """Display only the instruction for the selected menu item."""
+    if choice == "1":
+        print("Enter a name, student ID, and three scores from 0 to 100.")
+        print("The average and letter grade are calculated automatically.")
+        print("Grades: A = 90-100, B = 80-89, C = 70-79, D = 60-69, F < 60.")
+    elif choice == "2":
+        print("Displays every student in a table with scores, average, and grade.")
+    elif choice == "3":
+        print("Displays the highest, lowest, and overall class averages.")
+    elif choice == "4":
+        print("Enter all or part of a name. The search is case-insensitive.")
+    elif choice == "5":
+        print("Saves all records to student_grades.txt in pipe-delimited format.")
+    elif choice == "6":
+        print("Records are saved automatically before the program exits.")
+
+
+def display_usage_instructions():
+    """Display a submenu for selecting one usage instruction."""
+    while True:
+        print("\nUsage Instructions")
+        print("1. Add new student record")
+        print("2. Display all students")
+        print("3. Display class statistics")
+        print("4. Search for student by name")
+        print("5. Save student records")
+        print("6. Exit")
+        print("B. Return to main menu")
+        choice = input("Choose a menu item for instructions: ").strip().lower()
+
+        if choice in ("1", "2", "3", "4", "5", "6"):
+            display_menu_instruction(choice)
+        elif choice in ("b", ""):
+            return
+        else:
+            print("Invalid usage menu choice. Select 1 through 6 or B.")
+
+
 def main():
     """Run the Student Grade Calculator menu."""
     students = load_student_records()
     print(f"Loaded {len(students)} student record(s) from {FILE_NAME}.")
+    print("For instructions about a menu option, select option 7.")
 
     while True:
         print("\nStudent Grade Calculator")
@@ -196,22 +236,31 @@ def main():
         print("4. Search for student by name")
         print("5. Save student records")
         print("Press ESC or enter 6 to save and exit")
+        print("7. Display usage instructions")
         choice = input("Choose an option: ").strip()
 
         if choice in ("\x1b", "ESC", "esc", "6"):
+            display_menu_instruction("6")
             save_student_records(students)
             print("Goodbye!")
             break
         if choice == "1":
+            display_menu_instruction(choice)
             add_new_student_record(students)
         elif choice == "2":
+            display_menu_instruction(choice)
             display_students(students)
         elif choice == "3":
+            display_menu_instruction(choice)
             display_class_statistics(students)
         elif choice == "4":
+            display_menu_instruction(choice)
             search_student(students)
         elif choice == "5":
+            display_menu_instruction(choice)
             save_student_records(students)
+        elif choice == "7":
+            display_usage_instructions()
         else:
             print("Invalid choice. Please select a menu option.")
 
