@@ -45,8 +45,8 @@ class Student:
         """Return a formatted summary of this student's record."""
         return (
             f"Name: {self.name} | ID: {self.id} | "
-            f"Test1: {self.Test1:.1f} | Test2: {self.Test2:.1f} | "
-            f"Test3: {self.Test3:.1f} | Average: {self.average:.2f} | "
+            f"Test1: {self.Test1:.2f} | Test2: {self.Test2:.2f} | "
+            f"Test3: {self.Test3:.2f} | Average: {self.average:.2f} | "
             f"Grade: {self.grade}"
         )
 
@@ -119,8 +119,9 @@ def save_student_records(students):
         with open(FILE_NAME, "w", encoding="utf-8") as file:
             for student in students:
                 file.write(
-                    f"{student.name}|{student.id}|{student.Test1}|"
-                    f"{student.Test2}|{student.Test3}|{student.average}|"
+                    f"{student.name}|{student.id}|{student.Test1:.2f}|"
+                    f"{student.Test2:.2f}|{student.Test3:.2f}|"
+                    f"{student.average:.2f}|"
                     f"{student.grade}\n"
                 )
     except (OSError, UnicodeError) as error:
@@ -146,8 +147,8 @@ def display_students(students):
     for student in students:
         print(
             f"{student.name[:20]:<20} {student.id[:15]:<15} "
-            f"{student.Test1:>7.1f} {student.Test2:>7.1f} "
-            f"{student.Test3:>7.1f} {student.average:>9.2f} "
+            f"{student.Test1:>7.2f} {student.Test2:>7.2f} "
+            f"{student.Test3:>7.2f} {student.average:>9.2f} "
             f"{student.grade:>7}"
         )
     print("-" * 91)
