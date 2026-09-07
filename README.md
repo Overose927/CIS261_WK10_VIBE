@@ -31,15 +31,15 @@ Choose a menu option by entering its number and pressing Enter.
 	- The table includes the name, ID, three test scores, average, and letter
 	  grade.
 
-3. **Display class statistics**
-	- Shows the highest student average.
-	- Shows the lowest student average.
-	- Shows the overall class average.
-
-4. **Search for student by name**
+3. **Search for student by name**
 	- Enter all or part of a student's name.
 	- The search is case-insensitive. For example, `alice` finds `Alice Smith`.
 	- Matching student details are displayed using the formatted student record.
+
+4. **Display class statistics**
+	- Shows the highest student average.
+	- Shows the lowest student average.
+	- Shows the overall class average.
 
 5. **Save student records**
 	- Saves all current records to `student_grades.txt`.
@@ -49,10 +49,13 @@ Choose a menu option by entering its number and pressing Enter.
 	  name|id|test1|test2|test3|average|grade
 	  ```
 
-6. **Exit**
-	- Enter `6`, `ESC`, or `esc` to exit.
+6. **Display usage instructions**
+	- Opens a submenu where you can select one menu item to view its instructions.
+	- Enter `B` to return to the main menu.
+
+**Exit (ESC)**
+	- Press the Escape key, or enter `ESC` or `esc`, to exit.
 	- The program automatically saves all records before exiting.
-	- You can also press the Escape key when the menu is waiting for input.
 
 ### Input Rules
 

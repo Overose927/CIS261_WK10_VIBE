@@ -192,12 +192,14 @@ def display_menu_instruction(choice):
     elif choice == "2":
         print("Displays every student in a table with scores, average, and grade.")
     elif choice == "3":
-        print("Displays the highest, lowest, and overall class averages.")
-    elif choice == "4":
         print("Enter all or part of a name. The search is case-insensitive.")
+    elif choice == "4":
+        print("Displays the highest, lowest, and overall class averages.")
     elif choice == "5":
         print("Saves all records to student_grades.txt in pipe-delimited format.")
     elif choice == "6":
+        print("Opens the usage-instructions submenu for the program.")
+    elif choice == "e":
         print("Records are saved automatically before the program exits.")
 
 
@@ -207,14 +209,17 @@ def display_usage_instructions():
         print("\nUsage Instructions")
         print("1. Add new student record")
         print("2. Display all students")
-        print("3. Display class statistics")
-        print("4. Search for student by name")
+        print("3. Search for student by name")
+        print("4. Display class statistics")
         print("5. Save student records")
-        print("6. Exit")
+        print("6. Display usage instructions")
+        print("E. Exit")
         print("B. Return to main menu")
         choice = input("Choose a menu item for instructions: ").strip().lower()
 
         if choice in ("1", "2", "3", "4", "5", "6"):
+            display_menu_instruction(choice)
+        elif choice == "e":
             display_menu_instruction(choice)
         elif choice in ("b", ""):
             return
@@ -232,15 +237,15 @@ def main():
         print("\nStudent Grade Calculator")
         print("1. Add new student record")
         print("2. Display all students")
-        print("3. Display class statistics")
-        print("4. Search for student by name")
+        print("3. Search for student by name")
+        print("4. Display class statistics")
         print("5. Save student records")
-        print("Press ESC or enter 6 to save and exit")
-        print("7. Display usage instructions")
+        print("6. Display usage instructions")
+        print("Press ESC to save and exit")
         choice = input("Choose an option: ").strip()
 
-        if choice in ("\x1b", "ESC", "esc", "6"):
-            display_menu_instruction("6")
+        if choice in ("\x1b", "ESC", "esc"):
+            display_menu_instruction("e")
             save_student_records(students)
             print("Goodbye!")
             break
@@ -252,14 +257,14 @@ def main():
             display_students(students)
         elif choice == "3":
             display_menu_instruction(choice)
-            display_class_statistics(students)
+            search_student(students)
         elif choice == "4":
             display_menu_instruction(choice)
-            search_student(students)
+            display_class_statistics(students)
         elif choice == "5":
             display_menu_instruction(choice)
             save_student_records(students)
-        elif choice == "7":
+        elif choice == "6":
             display_usage_instructions()
         else:
             print("Invalid choice. Please select a menu option.")
