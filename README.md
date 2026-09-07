@@ -54,8 +54,8 @@ Choose a menu option by entering its number and pressing Enter.
 	- Opens a submenu where you can select one menu item to view its instructions.
 	- Enter `B` to return to the main menu.
 
-**Exit (ESC)**
-	- Press the Escape key, or enter `ESC` or `esc`, to exit.
+**Exit (ESC or 7)**
+	- Press the Escape key, enter `ESC` or `esc`, or enter `7` to exit.
 	- The program automatically saves all records before exiting.
 
 ### Input Rules

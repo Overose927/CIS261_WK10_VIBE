@@ -71,7 +71,7 @@ def get_score(test_name):
     while True:
         try:
             score_text = input(f"Enter {test_name} score (0-100), or ESC to stop: ")
-            if score_text.strip().lower() == "esc":
+            if score_text.strip().lower() in ("esc", "\x1b"):
                 return None
             score = float(score_text)
             if 0 <= score <= 100:
@@ -85,7 +85,7 @@ def add_new_student_record(students):
     """Prompt for and add students until ESC is entered."""
     while True:
         name = input("\nEnter student name, or ESC to stop adding: ").strip()
-        if name.lower() == "esc":
+        if name.lower() in ("esc", "\x1b"):
             save_student_records(students)
             print("Returning to the main menu.")
             return
@@ -94,7 +94,7 @@ def add_new_student_record(students):
             continue
 
         student_id = input("Enter student ID, or ESC to stop adding: ").strip()
-        if student_id.lower() == "esc":
+        if student_id.lower() in ("esc", "\x1b"):
             save_student_records(students)
             print("Returning to the main menu.")
             return
@@ -264,6 +264,9 @@ def display_menu_instruction(choice):
     elif choice == "6":
         print("Display Usage Instructions")
         print("  Opens the usage-instructions submenu for the program.")
+    elif choice == "7":
+        print("Exit")
+        print("  Saves all records and exits the program.")
     print("-" * 58)
 
 
@@ -279,16 +282,19 @@ def display_usage_instructions():
         print("4.  Display class statistics")
         print("5.  Save student records")
         print("6.  Display usage instructions")
+        print("7.  Exit")
         print("B.  Return to main menu")
         print("-" * 58)
         choice = input("Choose a menu item for instructions: ").strip().lower()
 
-        if choice in ("1", "2", "3", "4", "5", "6"):
+        if choice in ("\x1b", "esc", "7"):
+            return True
+        if choice in ("1", "2", "3", "4", "5", "6", "7"):
             display_menu_instruction(choice)
         elif choice in ("b", ""):
-            return
+            return False
         else:
-            print("Invalid usage menu choice. Select 1 through 6 or B.")
+            print("Invalid usage menu choice. Select 1 through 7 or B.")
 
 
 def main():
@@ -307,12 +313,13 @@ def main():
         print("4.  Display class statistics")
         print("5.  Save student records")
         print("6.  Display usage instructions")
+        print("7.  Exit")
         print("-" * 58)
-        print("Press ESC to save and exit.")
+        print("Press ESC, type ESC, or enter 7 to save and exit.")
         print("=" * 58)
         choice = input("Choose an option: ").strip()
 
-        if choice in ("\x1b", "ESC", "esc"):
+        if choice in ("\x1b", "ESC", "esc", "7"):
             save_student_records(students)
             print("Goodbye!")
             break
@@ -332,7 +339,10 @@ def main():
             display_menu_instruction(choice)
             save_student_records(students)
         elif choice == "6":
-            display_usage_instructions()
+            if display_usage_instructions():
+                save_student_records(students)
+                print("Goodbye!")
+                break
         else:
             print("Invalid choice. Please select a menu option.")
 
