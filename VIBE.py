@@ -46,12 +46,23 @@ class Student:
         self.grade = self.calculate_letter_grade()
 
     def __str__(self):
-        """Return a formatted summary of this student's record."""
+        """Return a human-readable summary of this student's record."""
         return (
-            f"Name: {self.name} | ID: {self.id} | "
-            f"Test1: {self.Test1:.2f} | Test2: {self.Test2:.2f} | "
-            f"Test3: {self.Test3:.2f} | Average: {self.average:.2f} | "
-            f"Grade: {self.grade}"
+            f"Name: {self.name}\n"
+            f"ID: {self.id}\n"
+            f"Test 1: {self.Test1:.2f}\n"
+            f"Test 2: {self.Test2:.2f}\n"
+            f"Test 3: {self.Test3:.2f}\n"
+            f"Average: {self.average:.2f}\n"
+            f"Letter Grade: {self.grade}"
+        )
+
+    def to_file_string(self):
+        """Return this student's record in pipe-delimited file format."""
+        return (
+            f"{self.name}|{self.id}|{self.Test1:.2f}|"
+            f"{self.Test2:.2f}|{self.Test3:.2f}|"
+            f"{self.average:.2f}|{self.grade}"
         )
 
 
@@ -59,7 +70,10 @@ def get_score(test_name):
     """Prompt for a valid score from 0 through 100."""
     while True:
         try:
-            score = float(input(f"Enter {test_name} score (0-100): "))
+            score_text = input(f"Enter {test_name} score (0-100), or ESC to stop: ")
+            if score_text.strip().lower() == "esc":
+                return None
+            score = float(score_text)
             if 0 <= score <= 100:
                 return score
             print("Score must be between 0 and 100.")
@@ -68,29 +82,58 @@ def get_score(test_name):
 
 
 def add_new_student_record(students):
-    """Prompt for and add one Student object to the records list."""
-    name = input("Enter student name: ").strip()
-    if not name:
-        print("Student name cannot be blank.")
-        return
-
-    student_id = input("Enter student ID: ").strip()
-    if not student_id:
-        print("Student ID cannot be blank.")
-        return
-
-    new_student = Student(name, student_id)
-    new_student.Test1 = get_score("Test1")
-    new_student.Test2 = get_score("Test2")
-    new_student.Test3 = get_score("Test3")
-    new_student.update_grade()
-    for index, student in enumerate(students):
-        if student.id == student_id:
-            students[index] = new_student
-            print(f"Record updated:\n{new_student}")
+    """Prompt for and add students until ESC is entered."""
+    while True:
+        name = input("\nEnter student name, or ESC to stop adding: ").strip()
+        if name.lower() == "esc":
+            save_student_records(students)
+            print("Returning to the main menu.")
             return
-    students.append(new_student)
-    print(f"Record saved:\n{new_student}")
+        if not name:
+            print("Student name cannot be blank.")
+            continue
+
+        student_id = input("Enter student ID, or ESC to stop adding: ").strip()
+        if student_id.lower() == "esc":
+            save_student_records(students)
+            print("Returning to the main menu.")
+            return
+        if not student_id:
+            print("Student ID cannot be blank.")
+            continue
+
+        test1 = get_score("Test1")
+        if test1 is None:
+            save_student_records(students)
+            print("Returning to the main menu.")
+            return
+        test2 = get_score("Test2")
+        if test2 is None:
+            save_student_records(students)
+            print("Returning to the main menu.")
+            return
+        test3 = get_score("Test3")
+        if test3 is None:
+            save_student_records(students)
+            print("Returning to the main menu.")
+            return
+
+        new_student = Student(name, student_id, test1, test2, test3)
+        record_summary = (
+            f"Name: {new_student.name}, ID: {new_student.id}\n"
+            f"Average: {new_student.average:.2f}, "
+            f"Letter Grade: {new_student.grade}"
+        )
+        for index, student in enumerate(students):
+            if student.id == student_id:
+                students[index] = new_student
+                print("Record updated:")
+                print(record_summary)
+                break
+        else:
+            students.append(new_student)
+            print("Record saved:")
+            print(record_summary)
 
 
 def load_student_records():
@@ -122,12 +165,7 @@ def save_student_records(students):
     try:
         with open(FILE_NAME, "w", encoding="utf-8") as file:
             for student in students:
-                file.write(
-                    f"{student.name}|{student.id}|{student.Test1:.2f}|"
-                    f"{student.Test2:.2f}|{student.Test3:.2f}|"
-                    f"{student.average:.2f}|"
-                    f"{student.grade}\n"
-                )
+                file.write(student.to_file_string() + "\n")
     except (OSError, UnicodeError) as error:
         print(f"Could not save {FILE_NAME}: {error}")
         return False
@@ -156,12 +194,14 @@ def display_students(students):
             f"{student.grade:>7}"
         )
     print("-" * 91)
+    input("Press Enter to return to the main menu.")
 
 
 def display_class_statistics(students):
     """Display highest, lowest, and overall class averages."""
     if not students:
         print("No student records found.")
+        input("Press Enter to return to the main menu.")
         return
 
     averages = [student.average for student in students]
@@ -169,57 +209,81 @@ def display_class_statistics(students):
     print(f"Highest average: {max(averages):.2f}")
     print(f"Lowest average:  {min(averages):.2f}")
     print(f"Class average:   {sum(averages) / len(averages):.2f}")
+    input("Press Enter to return to the main menu.")
 
 
 def search_student(students):
-    """Find and display students whose names contain the search text."""
-    search_name = input("Enter student name to search: ").strip().lower()
-    matches = [student for student in students if search_name in student.name.lower()]
-    if not matches:
-        print("No matching student found.")
-        return
+    """Search for students and repeat while the user chooses to continue."""
+    while True:
+        search_name = input("Enter student name to search: ").strip().lower()
+        matches = [
+            student for student in students if search_name in student.name.lower()
+        ]
+        if not matches:
+            print("No matching student found.")
+        else:
+            for student in matches:
+                print(student)
 
-    for student in matches:
-        print(student)
+        while True:
+            search_again = input("Search for another student? (Yes/No): ").strip().lower()
+            if search_again in ("y", "yes"):
+                break
+            if search_again in ("n", "no"):
+                input("Press Enter to return to the main menu.")
+                return
+            print("Please enter Yes or No.")
 
 
 def display_menu_instruction(choice):
     """Display only the instruction for the selected menu item."""
+    print("\n" + "-" * 58)
+    print("Menu Instructions".center(58))
+    print("-" * 58)
     if choice == "1":
-        print("Enter a name, student ID, and three scores from 0 to 100.")
-        print("The average and letter grade are calculated automatically.")
-        print("Grades: A = 90-100, B = 80-89, C = 70-79, D = 60-69, F < 60.")
+        print("Add New Student Records")
+        print("  Enter a name, student ID, and three scores from 0 to 100.")
+        print("  The average and letter grade are calculated automatically.")
+        print("  Continue entering students until you type ESC.")
+        print("  Grades: A = 90-100, B = 80-89, C = 70-79,")
+        print("          D = 60-69, and F = below 60.")
     elif choice == "2":
-        print("Displays every student in a table with scores, average, and grade.")
+        print("Display All Students")
+        print("  Displays every student in a table with scores, average, and grade.")
     elif choice == "3":
-        print("Enter all or part of a name. The search is case-insensitive.")
+        print("Search for Student by Name")
+        print("  Enter all or part of a name.")
+        print("  The search is case-insensitive.")
     elif choice == "4":
-        print("Displays the highest, lowest, and overall class averages.")
+        print("Display Class Statistics")
+        print("  Displays the highest, lowest, and overall class averages.")
     elif choice == "5":
-        print("Saves all records to student_grades.txt in pipe-delimited format.")
+        print("Save Student Records")
+        print("  Saves all records to student_grades.txt")
+        print("  in pipe-delimited format.")
     elif choice == "6":
-        print("Opens the usage-instructions submenu for the program.")
-    elif choice == "e":
-        print("Records are saved automatically before the program exits.")
+        print("Display Usage Instructions")
+        print("  Opens the usage-instructions submenu for the program.")
+    print("-" * 58)
 
 
 def display_usage_instructions():
     """Display a submenu for selecting one usage instruction."""
     while True:
-        print("\nUsage Instructions")
-        print("1. Add new student record")
-        print("2. Display all students")
-        print("3. Search for student by name")
-        print("4. Display class statistics")
-        print("5. Save student records")
-        print("6. Display usage instructions")
-        print("E. Exit")
-        print("B. Return to main menu")
+        print("\n" + "=" * 58)
+        print("Usage Instructions".center(58))
+        print("=" * 58)
+        print("1.  Add new student record")
+        print("2.  Display all students")
+        print("3.  Search for student by name")
+        print("4.  Display class statistics")
+        print("5.  Save student records")
+        print("6.  Display usage instructions")
+        print("B.  Return to main menu")
+        print("-" * 58)
         choice = input("Choose a menu item for instructions: ").strip().lower()
 
         if choice in ("1", "2", "3", "4", "5", "6"):
-            display_menu_instruction(choice)
-        elif choice == "e":
             display_menu_instruction(choice)
         elif choice in ("b", ""):
             return
@@ -231,21 +295,24 @@ def main():
     """Run the Student Grade Calculator menu."""
     students = load_student_records()
     print(f"Loaded {len(students)} student record(s) from {FILE_NAME}.")
-    print("For instructions about a menu option, select option 7.")
+    print("For instructions about a menu option, select option 6.")
 
     while True:
-        print("\nStudent Grade Calculator")
-        print("1. Add new student record")
-        print("2. Display all students")
-        print("3. Search for student by name")
-        print("4. Display class statistics")
-        print("5. Save student records")
-        print("6. Display usage instructions")
-        print("Press ESC to save and exit")
+        print("\n" + "=" * 58)
+        print("Student Grade Calculator".center(58))
+        print("=" * 58)
+        print("1.  Add new student record")
+        print("2.  Display all students")
+        print("3.  Search for student by name")
+        print("4.  Display class statistics")
+        print("5.  Save student records")
+        print("6.  Display usage instructions")
+        print("-" * 58)
+        print("Press ESC to save and exit.")
+        print("=" * 58)
         choice = input("Choose an option: ").strip()
 
         if choice in ("\x1b", "ESC", "esc"):
-            display_menu_instruction("e")
             save_student_records(students)
             print("Goodbye!")
             break

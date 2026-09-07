@@ -25,6 +25,7 @@ Choose a menu option by entering its number and pressing Enter.
 	- Enter `Test1`, `Test2`, and `Test3` as scores from `0` through `100`.
 	- The program calculates the average and letter grade automatically.
 	- If the ID already exists, the existing record is updated.
+	- Continue entering students until you type `ESC`.
 
 2. **Display all students**
 	- Shows every student in a formatted table.
