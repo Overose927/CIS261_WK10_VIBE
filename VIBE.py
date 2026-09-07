@@ -107,20 +107,27 @@ def load_student_records():
                 except ValueError:
                     continue
     except FileNotFoundError:
-        pass
+        print(f"No existing {FILE_NAME} found. Starting with no records.")
+    except (OSError, UnicodeError) as error:
+        print(f"Could not load {FILE_NAME}: {error}")
     return students
 
 
 def save_student_records(students):
     """Save Student objects as pipe-delimited text records."""
-    with open(FILE_NAME, "w", encoding="utf-8") as file:
-        for student in students:
-            file.write(
-                f"{student.name}|{student.id}|{student.Test1}|"
-                f"{student.Test2}|{student.Test3}|{student.average}|"
-                f"{student.grade}\n"
-            )
+    try:
+        with open(FILE_NAME, "w", encoding="utf-8") as file:
+            for student in students:
+                file.write(
+                    f"{student.name}|{student.id}|{student.Test1}|"
+                    f"{student.Test2}|{student.Test3}|{student.average}|"
+                    f"{student.grade}\n"
+                )
+    except (OSError, UnicodeError) as error:
+        print(f"Could not save {FILE_NAME}: {error}")
+        return False
     print(f"Saved {len(students)} student record(s) to {FILE_NAME}.")
+    return True
 
 
 def display_students(students):
