@@ -143,19 +143,20 @@ def load_student_records():
         with open(FILE_NAME, "r", encoding="utf-8") as file:
             for line in file:
                 fields = line.rstrip("\n").split("|")
-                if len(fields) not in (5, 7):
+                if len(fields) != 7:
                     continue
                 try:
                     student = Student(*fields[:5])
-                    if len(fields) == 7:
-                        student.average = float(fields[5])
-                        student.grade = fields[6]
+                    student.average = float(fields[5])
+                    student.grade = fields[6]
                     students.append(student)
                 except ValueError:
                     continue
     except FileNotFoundError:
         print(f"No existing {FILE_NAME} found. Starting with no records.")
     except (OSError, UnicodeError) as error:
+        print(f"Could not load {FILE_NAME}: {error}")
+    except Exception as error:
         print(f"Could not load {FILE_NAME}: {error}")
     return students
 
@@ -167,6 +168,9 @@ def save_student_records(students):
             for student in students:
                 file.write(student.to_file_string() + "\n")
     except (OSError, UnicodeError) as error:
+        print(f"Could not save {FILE_NAME}: {error}")
+        return False
+    except Exception as error:
         print(f"Could not save {FILE_NAME}: {error}")
         return False
     print(f"Saved {len(students)} student record(s) to {FILE_NAME}.")
