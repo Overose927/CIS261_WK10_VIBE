@@ -16,6 +16,7 @@ FILE_NAME = "student_grades.txt"
 class Student:
     """Store one student's information and calculated grade."""
 
+    # Create a student record with a name, ID, and three test scores.
     def __init__(self, name, student_id, test1=0, test2=0, test3=0):
         self.name = name
         self.id = student_id
@@ -25,10 +26,12 @@ class Student:
         self.average = self.calculate_average()
         self.grade = self.calculate_letter_grade()
 
+    # Calculate the student's average score across all three tests.
     def calculate_average(self):
         """Return this student's average score as a float."""
         return (self.Test1 + self.Test2 + self.Test3) / 3
 
+    # Convert the student's numeric average into a letter grade.
     def calculate_letter_grade(self):
         """Return this student's letter grade based on the average."""
         if self.average >= 90:
@@ -41,11 +44,13 @@ class Student:
             return "D"
         return "F"
 
+    # Refresh the calculated average and letter grade after score changes.
     def update_grade(self):
         """Recalculate this student's average and letter grade."""
         self.average = self.calculate_average()
         self.grade = self.calculate_letter_grade()
 
+    # Format the student's details into a readable summary for display.
     def __str__(self):
         """Return a human-readable summary of this student's record."""
         return (
@@ -58,6 +63,7 @@ class Student:
             f"Letter Grade: {self.grade}"
         )
 
+    # Prepare the student record for saving in the text file format.
     def to_file_string(self):
         """Return this student's record in pipe-delimited file format."""
         return (
@@ -67,6 +73,7 @@ class Student:
         )
 
 
+# Ask the user for a test score and keep prompting until it is valid.
 def get_score(test_name):
     """Prompt for a valid score from 0 through 100."""
     while True:
@@ -82,6 +89,7 @@ def get_score(test_name):
             print("Please enter a numeric score.")
 
 
+# Collect a student's name, ID, and scores and add or update the record.
 def add_new_student_record(students):
     """Prompt for and add students until ESC is entered."""
     while True:
@@ -137,6 +145,7 @@ def add_new_student_record(students):
             print(record_summary)
 
 
+# Read all saved student records from the file and recreate Student objects.
 def load_student_records():
     """Load Student objects from the pipe-delimited records file."""
     students = []
@@ -162,6 +171,7 @@ def load_student_records():
     return students
 
 
+# Write every student record to the data file so it can be restored later.
 def save_student_records(students):
     """Save Student objects as pipe-delimited text records."""
     try:
@@ -178,6 +188,7 @@ def save_student_records(students):
     return True
 
 
+# Show all students in a table with their scores, average, and grade.
 def display_students(students):
     """Display all student records in a formatted table."""
     if not students:
@@ -202,6 +213,7 @@ def display_students(students):
     input("Press Enter to return to the main menu.")
 
 
+# Display the highest, lowest, and overall average for the class.
 def display_class_statistics(students):
     """Display highest, lowest, and overall class averages."""
     if not students:
@@ -217,6 +229,7 @@ def display_class_statistics(students):
     input("Press Enter to return to the main menu.")
 
 
+# Search the list by name and let the user look up more students if needed.
 def search_student(students):
     """Search for students and repeat while the user chooses to continue."""
     while True:
@@ -240,6 +253,7 @@ def search_student(students):
             print("Please enter Yes or No.")
 
 
+# Show the help text for the selected menu option.
 def display_menu_instruction(choice):
     """Display only the instruction for the selected menu item."""
     print("\n" + "-" * 58)
@@ -275,6 +289,7 @@ def display_menu_instruction(choice):
     print("-" * 58)
 
 
+# Present a submenu explaining what each program option does.
 def display_usage_instructions():
     """Display a submenu for selecting one usage instruction."""
     while True:
@@ -302,6 +317,7 @@ def display_usage_instructions():
             print("Invalid usage menu choice. Select 1 through 7 or B.")
 
 
+# Run the main menu loop for the student grade calculator.
 def main():
     """Run the Student Grade Calculator menu."""
     students = load_student_records()
